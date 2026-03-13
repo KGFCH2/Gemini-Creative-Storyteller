@@ -121,9 +121,6 @@ class CreativeDirectorAgent:
             if i < len(GEMINI_API_KEYS) - 1:
                 print(f"🎬 Key {i+1} exhausted. Cooling down for 5s before switching to Key {i+2}...")
                 await asyncio.sleep(5) # Small backoff to avoid cascading rate limits
-                    # For 429 and all other errors, try next model on the same key
-                    print(f"   → Trying next model on same key...")
-                    continue
                 
         # If all keys and models exhausted
         print("❌ All configured Gemini API keys and models exhausted.")
