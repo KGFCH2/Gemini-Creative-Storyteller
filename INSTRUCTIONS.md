@@ -2,7 +2,9 @@
 
 ## 🌟 Overview
 
-**AI Creative StoryTeller** is a futuristic web application using React and TailwindCSS for building a cinematic storytelling interface, and a Python (FastAPI/GenAI) backend incorporating multiple Gemini API keys automatically failing over seamlessly.
+**AI Creative StoryTeller** is a cinematic multimodal agent built for the **evpost platform hackathon**. It fulfills the "Creative Director" problem statement by leveraging **Gemini's native interleaved output** to seamlessly weave together text, generated imagery, and audio narration in a single, fluid flow.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
 
@@ -44,6 +46,11 @@
    GEMINI_API_KEY_3="your_third_key"
    GEMINI_API_KEY_4="your_fourth_key"
    GEMINI_API_KEY_5="your_fifth_key"
+   GEMINI_API_KEY_6="your_sixth_key"
+   GEMINI_API_KEY_7="your_seventh_key"
+   GEMINI_API_KEY_8="your_eighth_key"
+   GEMINI_API_KEY_9="your_nineth_key"
+   GEMINI_API_KEY_10="your_tenth_key"
    ```
 
 4. 🚀 Start the backend server:
@@ -76,7 +83,7 @@
 ### 📦 Backend Files (`/backend`)
 
 - 📄 **`main.py`**: The FastAPI entry point. It handles incoming requests for multimodal generation (`POST /generate`) and serves static files.
-- 📄 **`creative_director_agent.py`**: A specialized AI orchestrator that acts as a creative director, weaving together interleaved text and images via Gemini's native API, into rich mixed-media timelines. It incorporates smart fallback logic that tests up to 5 API keys automatically.
+- 📄 **`creative_director_agent.py`**: A specialized AI orchestrator that acts as a creative director, weaving together interleaved text and images via Gemini's native API, into rich mixed-media timelines. It incorporates smart fallback logic that tests up to 10 API keys automatically.
 - 📄 **`story_agent.py`**: Formats initial settings or handles secondary text generation logic.
 - 📄 **`audio_agent.py`**: Runs text-to-speech creation for immersive narration.
 - 📁 **`static/`**: Folder containing generated audio output.
@@ -96,6 +103,6 @@
 
 ## 🔄 Handling API Keys Failover
 
-The `creative_director_agent.py` script automatically utilizes `GEMINI_API_KEY_1` to `..._5`. If one key exhausts its quota or encounters an error during multimodal visual generation, the script catches the error and silently attempts to query the next available key ensuring maximum uptime without user disruption.
+The `creative_director_agent.py` script automatically utilizes `GEMINI_API_KEY_1` to `..._10`. If one key exhausts its quota or encounters an error during multimodal visual generation, the script catches the error and silently attempts to query the next available key ensuring maximum uptime without user disruption.
 
 ---
