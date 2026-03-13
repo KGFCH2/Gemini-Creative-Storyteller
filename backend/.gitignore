@@ -1,0 +1,7 @@
+.env
+__pycache__/
+*.pyc
+static/audio/*
+static/images/*
+!static/audio/.keep
+!static/images/.keep
