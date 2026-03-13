@@ -51,6 +51,10 @@
    GEMINI_API_KEY_8="your_eighth_key"
    GEMINI_API_KEY_9="your_nineth_key"
    GEMINI_API_KEY_10="your_tenth_key"
+   GEMINI_API_KEY_11="your_eleventh_key"
+   GEMINI_API_KEY_12="your_twelfth_key"
+   GEMINI_API_KEY_13="your_thirteenth_key"
+   GEMINI_API_KEY_14="your_fourteenth_key"
    ```
 
 4. 🚀 Start the backend server:
@@ -83,7 +87,7 @@
 ### 📦 Backend Files (`/backend`)
 
 - 📄 **`main.py`**: The FastAPI entry point. It handles incoming requests for multimodal generation (`POST /generate`) and serves static files.
-- 📄 **`creative_director_agent.py`**: A specialized AI orchestrator that acts as a creative director, weaving together interleaved text and images via Gemini's native API, into rich mixed-media timelines. It incorporates smart fallback logic that tests up to 10 API keys automatically.
+- 📄 **`creative_director_agent.py`**: A specialized AI orchestrator that acts as a creative director, weaving together interleaved text and images via Gemini's native API, into rich mixed-media timelines. It incorporates smart fallback logic that tests up to 14 API keys automatically.
 - 📄 **`story_agent.py`**: Formats initial settings or handles secondary text generation logic.
 - 📄 **`audio_agent.py`**: Runs text-to-speech creation for immersive narration.
 - 📁 **`static/`**: Folder containing generated audio output.
@@ -103,6 +107,6 @@
 
 ## 🔄 Handling API Keys Failover
 
-The `creative_director_agent.py` script automatically utilizes `GEMINI_API_KEY_1` to `..._10`. If one key exhausts its quota or encounters an error during multimodal visual generation, the script catches the error and silently attempts to query the next available key ensuring maximum uptime without user disruption.
+The `creative_director_agent.py` script automatically utilizes `GEMINI_API_KEY_1` to `..._14`. If one key exhausts its quota or encounters an error during multimodal visual generation, the script catches the error and silently attempts to query the next available key ensuring maximum uptime without user disruption.
 
 ---
