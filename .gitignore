@@ -1,0 +1,19 @@
+# Present in directory
+.venv/
+.vscode/
+ABOUT_PROJECT.md
+
+# Application Secrets & Environments
+backend/.env
+backend/venv/
+backend/__pycache__/
+
+# Frontend Dependencies & Builds
+frontend/node_modules/
+frontend/dist/
+
+# Generated Media
+backend/static/audio/*
+!backend/static/audio/.keep
+backend/static/images/*
+!backend/static/images/.keep
