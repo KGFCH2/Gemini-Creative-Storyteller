@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+@layer base {
+    body {
+        background-color: #0f172a;
+        color: #f8fafc;
+        overflow-x: hidden;
+        margin: 0;
+        font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+}
+
+/* Custom Scrollbar for Modal and Archives */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #0f172a;
+    border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 10px;
+    border: 2px solid #0f172a;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+}
+
+.solid-panel {
+    background-color: #1e293b;
+    border: 2px solid #334155;
+    box-shadow: none;
+}
+
+.text-gradient {
+    color: #f8fafc;
+}
+
+.hover-gradient:hover {
+    color: #38bdf8;
+    transition: color 0.2s ease;
+}
+
+.glow-card {
+    transition: all 0.3s ease-in-out;
+}
+
+.glow-card:hover {
+    box-shadow: 0 0 20px #00f3ff, inset 0 0 10px #9d00ff;
+}
+
+/* Custom scrollbar for futuristic feel */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #050510;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #9d00ff;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #00f3ff;
+}
+
+/* Cinematic AI Portal Animations */
+@keyframes portal-spin {
+    from { transform: rotate(0deg) scale(0.8); opacity: 0; }
+    50% { transform: rotate(180deg) scale(1.1); opacity: 1; filter: drop-shadow(0 0 40px #38bdf8); }
+    to { transform: rotate(360deg) scale(1); opacity: 0.8; filter: drop-shadow(0 0 20px #818cf8); }
+}
+
+@keyframes pulse-ring {
+    0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7); opacity: 1; }
+    70% { transform: scale(1.5); box-shadow: 0 0 0 40px rgba(56, 189, 248, 0); opacity: 0; }
+    100% { transform: scale(1.5); box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); opacity: 0; }
+}
+
+@keyframes data-stream {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 100% 100%; }
+}
+
+.cinematic-portal {
+    animation: portal-spin 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.pulse-ring-element {
+    animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+.bg-cinematic-grid {
+    background-image: linear-gradient(rgba(56, 189, 248, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(56, 189, 248, 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: data-stream 15s linear infinite;
+}
