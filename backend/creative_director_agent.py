@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 # Import our existing specialised agents
 from audio_agent import generate_audio_async
 
-load_dotenv()
+load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
 
 class CreativeDirectorAgent:
     """
@@ -63,11 +63,10 @@ class CreativeDirectorAgent:
         
         # Models to try in order - each has its own separate quota pool
         MODELS_TO_TRY = [
+            'gemini-2.5-flash',
+            'gemini-2.5-pro',
             'gemini-2.0-flash',
             'gemini-2.0-flash-lite',
-            'gemini-1.5-flash',
-            'gemini-1.5-flash-8b',
-            'gemini-1.5-pro',
         ]
         
         print(f"🎬 Creative Director is generating multimodal story: {prompt}")
@@ -221,47 +220,54 @@ class CreativeDirectorAgent:
         
         def _sync_fetch():
             log_file = "image_gen_debug.log"
-            try:
-                encoded = urllib.parse.quote(img_desc[:300])
-                url = f"https://image.pollinations.ai/prompt/{encoded}?width=1024&height=1024&nologo=true"
-                
-                with open(log_file, "a") as log:
-                    log.write(f"DEBUG: Fetching image for: {img_desc[:50]}...\n")
-                
-                # Use a standard browser User-Agent to prevent bots blocking
-                headers = {
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-                }
+            import time
+            import random
+            
+            for attempt in range(3):
+                try:
+                    seed = random.randint(1, 100000)
+                    encoded = urllib.parse.quote(img_desc[:300])
+                    url = f"https://image.pollinations.ai/prompt/{encoded}?width=1024&height=1024&nologo=true&seed={seed}&model=flux"
 
-                resp = requests.get(url, timeout=45, headers=headers)
-                
-                with open(log_file, "a") as log:
-                    log.write(f"DEBUG: Status: {resp.status_code}, Length: {len(resp.content)}\n")
-                
-                # Verify we actually got an image and not a tiny error page
-                if resp.status_code == 200 and len(resp.content) > 5000:
-                    filename = f"scene_{os.urandom(4).hex()}.jpg"
-                    save_dir = os.path.join("static", "images")
-                    os.makedirs(save_dir, exist_ok=True)
-                    save_path = os.path.join(save_dir, filename)
-                    
-                    with open(save_path, "wb") as f:
-                        f.write(resp.content)
-                    
                     with open(log_file, "a") as log:
-                        log.write(f"DEBUG: Saved to {filename}\n")
-                        
-                    return f"/static/images/{filename}"
-                else:
-                    with open(log_file, "a") as log:
-                        log.write(f"DEBUG: Failed due to status {resp.status_code} or small content\n")
-                return None
-            except Exception as e:
-                with open(log_file, "a") as log:
-                    log.write(f"DEBUG: ERROR: {str(e)}\n")
-                return None
+                        log.write(f"DEBUG: [Attempt {attempt+1}] Fetching image for: {img_desc[:50]}...\n")
 
-        # Run the synchronous request in a separate thread so it doesn't block the backend event loop
+                    # Use a standard browser User-Agent to prevent bots blocking
+                    headers = {
+                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                    }
+                    
+                    # Add random jitter to prevent slamming Pollinations AI rate limits simultaneously
+                    time.sleep(random.uniform(0.5, 2.0) + (attempt * 2))
+
+                    resp = requests.get(url, timeout=45, headers=headers)
+
+                    with open(log_file, "a") as log:
+                        log.write(f"DEBUG: Status: {resp.status_code}, Length: {len(resp.content)}\n")
+
+                    # Verify we actually got an image and not a tiny error page
+                    if resp.status_code == 200 and len(resp.content) > 5000:
+                        filename = f"scene_{os.urandom(4).hex()}.jpg"
+                        save_dir = os.path.join("static", "images")
+                        os.makedirs(save_dir, exist_ok=True)
+                        save_path = os.path.join(save_dir, filename)
+
+                        with open(save_path, "wb") as f:
+                            f.write(resp.content)
+
+                        with open(log_file, "a") as log:
+                            log.write(f"DEBUG: Saved to {filename}\n")
+
+                        return f"/static/images/{filename}"
+                    else:
+                        with open(log_file, "a") as log:
+                            log.write(f"DEBUG: Failed due to status {resp.status_code} or small content. Retrying...\n")
+                            
+                except Exception as e:
+                    with open(log_file, "a") as log:
+                        log.write(f"DEBUG: ERROR: {str(e)}\n")
+            
+            return None
         img_url = await asyncio.to_thread(_sync_fetch)
         
         if img_url:
@@ -296,13 +302,14 @@ class CreativeDirectorAgent:
         node_id = node.get("id", "0")
         
         # Define the generation logic (using threading for synchronous agent calls)
-        from image_agent import generate_image
-        
+        # Note: The older image generation agent is deprecated in favor of direct Pollinations generation above
+
         # We use existing agents as backup or secondary production logic
         from audio_agent import generate_audio_async
         audio_path = await generate_audio_async(node.get("narration", ""))
-        image_path = await asyncio.to_thread(generate_image, node.get("visual_prompt", ""))
         
+        # Image generation has shifted to the interleaving phase
+        image_path = node.get("image_url", "")
         return {
             "id": node_id,
             "text": node.get("narration", ""),
