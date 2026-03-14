@@ -1,7 +1,11 @@
+# Present locally
 .env
+venv/
 __pycache__/
-*.pyc
+image_gen_debug.log
+
+# Generated Media
 static/audio/*
-static/images/*
 !static/audio/.keep
+static/images/*
 !static/images/.keep
