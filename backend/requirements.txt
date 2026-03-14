@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+google-genai>=1.10.0
+gTTS
+requests
+pillow
+python-multipart
+edge-tts
+python-dotenv
+pydantic
