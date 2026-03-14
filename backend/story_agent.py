@@ -5,23 +5,11 @@ from google import genai
 from dotenv import load_dotenv
 
 # Load all keys from .env
-load_dotenv()
-KEYS = [
-    os.environ.get("GEMINI_API_KEY_1"),
-    os.environ.get("GEMINI_API_KEY_2"),
-    os.environ.get("GEMINI_API_KEY_3"),
-    os.environ.get("GEMINI_API_KEY_4"),
-    os.environ.get("GEMINI_API_KEY_5"),
-    os.environ.get("GEMINI_API_KEY_6"),
-    os.environ.get("GEMINI_API_KEY_7"),
-    os.environ.get("GEMINI_API_KEY_8"),
-    os.environ.get("GEMINI_API_KEY_9"),
-    os.environ.get("GEMINI_API_KEY_10"),
-    os.environ.get("GEMINI_API_KEY_11"),
-    os.environ.get("GEMINI_API_KEY_12"),
-    os.environ.get("GEMINI_API_KEY_13"),
-    os.environ.get("GEMINI_API_KEY_14")
-]
+load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
+
+# Dynamically load all available Gemini API keys from the environment variables
+KEYS = [os.environ.get(f"GEMINI_API_KEY_{i}") for i in range(1, 21)]
+
 # Filter out empty keys
 GEMINI_API_KEYS = [k for k in KEYS if k]
 
@@ -61,13 +49,12 @@ def generate_story_and_scenes(prompt: str) -> dict:
         print(f"Trying Gemini Key {i+1}...")
         try:
             client = genai.Client(api_key=api_key)
-            # Utilizing a more stable, broadly available model: gemini-2.0-flash
-            # gemini-2.0-flash-exp has been transitioned to the stable release
+            # Utilizing a more stable, broadly available model: gemini-2.5-flash
             response = client.models.generate_content(
-                model='gemini-2.0-flash', 
+                model='gemini-2.5-flash',
                 contents=f"{sys_prompt}\nUser Idea: {prompt}"
             )
-            
+
             # Parse output properly
             text = response.text.strip()
             
