@@ -136,14 +136,25 @@ const InfoModal = ({ type, onClose }) => {
                         {active.icon}
                         <h3 className="text-lg font-black text-white uppercase tracking-tight">{active.title}</h3>
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full text-slate-400 transition-colors"><X size={20} /></button>
+                    <button 
+                        onClick={onClose} 
+                        className="p-2 hover:bg-red-500/20 hover:text-red-500 rounded-full text-slate-400 transition-all duration-300"
+                    >
+                        <X size={20} />
+                    </button>
                 </div>
                 <div className="p-8 space-y-4">
-                    {active.text && <p className="text-slate-300 text-sm leading-relaxed">{active.text}</p>}
+                    {active.text && (
+                        <div className="p-4 rounded-xl bg-[#0f172a]/30 border border-transparent hover:border-blue-500/30 hover:bg-[#0f172a]/50 transition-all duration-300 group">
+                            <p className="text-slate-300 text-sm leading-relaxed group-hover:text-white transition-colors">
+                                {active.text}
+                            </p>
+                        </div>
+                    )}
                     {active.sections && active.sections.map((s, i) => (
-                        <div key={i} className="bg-[#0f172a] p-4 rounded-xl border border-[#334155]">
-                            <p className="text-xs font-black text-blue-400 uppercase mb-1">{s.q}</p>
-                            <p className="text-xs text-slate-400 font-medium">{s.a}</p>
+                        <div key={i} className="bg-[#0f172a] p-4 rounded-xl border border-[#334155] hover:border-blue-500/50 hover:bg-[#162033] transition-all duration-300 cursor-default group">
+                            <p className="text-xs font-black text-blue-400 uppercase mb-1 group-hover:text-blue-300 transition-colors">{s.q}</p>
+                            <p className="text-xs text-slate-400 font-medium group-hover:text-slate-300 transition-colors">{s.a}</p>
                         </div>
                     ))}
                 </div>
