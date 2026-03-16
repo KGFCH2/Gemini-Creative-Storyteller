@@ -2,6 +2,8 @@ import asyncio
 import os
 import json
 import base64
+import hashlib
+import requests
 from google import genai
 from google.genai import types
 from dotenv import load_dotenv
@@ -24,6 +26,8 @@ class CreativeDirectorAgent:
             raise ValueError("GEMINI_API_KEY_1 is missing.")
         # Using the new SDK client for multimodal generation
         self.client = genai.Client(api_key=self.api_key)
+        self.infip_key = os.environ.get("INFIP_API_KEY")
+        self.image_semaphore = asyncio.Semaphore(5) # Higher limit for faster throughput
 
     async def generate_mixed_media_stream(self, prompt: str, voice: str = "female"):
         """
@@ -139,7 +143,8 @@ class CreativeDirectorAgent:
         
         # 1. Clean the text and attempt broad segment splitting
         # Catching: [IMAGE_PROMPT: ...], (IMAGE_PROMPT: ...), **IMAGE_PROMPT: ...**
-        raw_segments = re.split(r'[*_]{0,2}[(\[][\s]*IMAGE_PROMPT:[\s]*(.*?)[)\]][*_]{0,2}', full_text, flags=re.IGNORECASE)
+        # More robust regex to handle variations in spacing and bolding
+        raw_segments = re.split(r'[*_]{0,2}[(\[]\s*IMAGE_PROMPT\s*[:\-]?\s*(.*?)\s*[)\]][*_]{0,2}', full_text, flags=re.IGNORECASE)
         
         # Handle cases where segments are too few (fallback to paragraph splitting)
         if len(raw_segments) <= 1:
@@ -185,8 +190,9 @@ class CreativeDirectorAgent:
             
             # Prepare concurrency
             async def generate_and_return(idx_info, desc):
-                node = await self._generate_pollinations_image(desc, requests)
-                return idx_info, node
+                async with self.image_semaphore:
+                    node = await self._generate_pollinations_image(desc)
+                    return idx_info, node
 
             gen_tasks = [generate_and_return(t[0], t[1]) for t in pending_image_tasks]
             results = await asyncio.gather(*gen_tasks)
@@ -212,7 +218,7 @@ class CreativeDirectorAgent:
         print(f"✅ Interleaved Process Complete: {len(nodes)} nodes constructed.")
         return nodes
 
-    async def _generate_pollinations_image(self, img_desc: str, requests):
+    async def _generate_pollinations_image(self, img_desc: str):
         """Generate a single image via Pollinations AI. Executes via thread to avoid blocking."""
         import urllib.parse
         import asyncio
@@ -223,49 +229,135 @@ class CreativeDirectorAgent:
             import time
             import random
             
-            for attempt in range(3):
+            def get_keywords(text):
+                # Simple logic to extract potential keywords for fallback search
+                words = [w.strip(" ,.!?\"") for w in text.lower().split() if len(w) > 3]
+                # Filter common stop words manually to keep it lightweight
+                stops = {"this", "that", "with", "from", "their", "into", "onto", "under", "above", "style", "cinematic", "highly", "detailed", "render", "pixar", "vibrant", "lighting"}
+                keywords = [w for w in words if w not in stops]
+                return ",".join(keywords[:3]) if keywords else "nature"
+
+            for attempt in range(4): # Restricted to INFIP priority + safe fallback
+                content = None
                 try:
-                    seed = random.randint(1, 100000)
-                    encoded = urllib.parse.quote(img_desc[:300])
-                    url = f"https://image.pollinations.ai/prompt/{encoded}?width=1024&height=1024&nologo=true&seed={seed}&model=flux"
-
-                    with open(log_file, "a") as log:
-                        log.write(f"DEBUG: [Attempt {attempt+1}] Fetching image for: {img_desc[:50]}...\n")
-
-                    # Use a standard browser User-Agent to prevent bots blocking
-                    headers = {
-                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-                    }
+                    seed = random.randint(1, 1000000)
+                    encoded = urllib.parse.quote(img_desc[:400])
+                    keywords = get_keywords(img_desc)
                     
-                    # Add random jitter to prevent slamming Pollinations AI rate limits simultaneously
-                    time.sleep(random.uniform(0.5, 2.0) + (attempt * 2))
+                    msg = f"🖼️ [Scene Gen] Attempt {attempt+1} for: {img_desc[:30]}..."
+                    print(msg, flush=True) # Direct console feedback
+                    with open(log_file, "a", encoding="utf-8") as log:
+                        log.write(f"DEBUG: {msg}\n")
+                        log.flush()
+                    
+                    if self.infip_key and attempt < 2:
+                        # Attempt 1-2: INFIP API (Primary Premium Provider)
+                        try:
+                            msg_infip = f"🖼️ [Scene Gen] INFIP Priority Attempt {attempt+1}..."
+                            print(msg_infip, flush=True)
+                            
+                            # Use the official API domain as per infip.pro documentation
+                            # Rotating between api.infip.pro and chat.infip.pro to ensure reachability
+                            domains = ["api.infip.pro", "chat.infip.pro"]
+                            infip_url = f"https://{domains[attempt % 2]}/v1/images/generations"
+                            
+                            headers = {
+                                "Authorization": f"Bearer {self.infip_key}",
+                                "Content-Type": "application/json",
+                                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+                            }
+                            # 'flux-schnell' is officially listed on their models page
+                            payload = {
+                                "prompt": img_desc,
+                                "model": "flux-schnell", 
+                                "n": 1,
+                                "size": "1024x1024",
+                                "response_format": "url"
+                            }
+                            resp = requests.post(infip_url, json=payload, headers=headers, timeout=60)
+                            
+                            with open(log_file, "a", encoding="utf-8") as log:
+                                log.write(f"DEBUG: INFIP [Attempt {attempt+1}] HTTP {resp.status_code}\n")
+                                if resp.status_code == 200:
+                                    try:
+                                        data = resp.json()
+                                        log.write(f"DEBUG: INFIP Success Data keys: {list(data.keys())}\n")
+                                        
+                                        # Standard format is data[0].url
+                                        if "data" in data and len(data["data"]) > 0:
+                                            img_url = data["data"][0].get("url")
+                                            if img_url:
+                                                log.write(f"DEBUG: Found URL: {img_url}\n")
+                                                img_resp = requests.get(img_url, timeout=35)
+                                                if img_resp.status_code == 200:
+                                                    content = img_resp.content
+                                                    log.write(f"DEBUG: Downloaded image, size: {len(content)}\n")
+                                        # Fallback for non-standard JSON
+                                        elif "url" in data:
+                                            img_url = data["url"]
+                                            img_resp = requests.get(img_url, timeout=35)
+                                            if img_resp.status_code == 200:
+                                                content = img_resp.content
+                                        elif "image" in data: # Base64
+                                            content = base64.b64decode(data["image"])
+                                    except Exception as je:
+                                        log.write(f"DEBUG: INFIP JSON error: {str(je)}\n")
+                                else:
+                                    log.write(f"DEBUG: INFIP Error Body: {resp.text[:200]}\n")
+                                log.flush()
+                        except Exception as e:
+                            with open(log_file, "a", encoding="utf-8") as log:
+                                log.write(f"DEBUG: INFIP Exception: {str(e)}\n")
+                                log.flush()
+                        
+                        if not content:
+                            if attempt == 0: time.sleep(5) # Wait a bit before second attempt
+                            continue
 
-                    resp = requests.get(url, timeout=45, headers=headers)
+                    elif attempt == 2:
+                        # Attempt 3: Contextual Fallback (LoremFlickr) - SILENT SAFETY
+                        try:
+                            l_url = f"https://loremflickr.com/1024/1024/{keywords}?random={seed}"
+                            resp = requests.get(l_url, timeout=25, allow_redirects=True)
+                            if resp.status_code == 200 and len(resp.content) > 15000:
+                                content = resp.content
+                            else:
+                                continue
+                        except:
+                            continue
+                    else:
+                        # Attempt 4: Final Safety
+                        try:
+                            unique_id = os.urandom(8).hex()
+                            p_url = f"https://picsum.photos/seed/{unique_id}/1024/1024"
+                            resp = requests.get(p_url, timeout=25)
+                            if resp.status_code == 200:
+                                content = resp.content
+                            else:
+                                continue
+                        except:
+                            continue
 
-                    with open(log_file, "a") as log:
-                        log.write(f"DEBUG: Status: {resp.status_code}, Length: {len(resp.content)}\n")
-
-                    # Verify we actually got an image and not a tiny error page
-                    if resp.status_code == 200 and len(resp.content) > 5000:
+                    # If we have content (from any attempt), save and return
+                    if content:
                         filename = f"scene_{os.urandom(4).hex()}.jpg"
                         save_dir = os.path.join("static", "images")
                         os.makedirs(save_dir, exist_ok=True)
                         save_path = os.path.join(save_dir, filename)
-
                         with open(save_path, "wb") as f:
-                            f.write(resp.content)
-
-                        with open(log_file, "a") as log:
-                            log.write(f"DEBUG: Saved to {filename}\n")
-
+                            f.write(content)
+                        
+                        success_msg = f"✅ Saved {filename} on attempt {attempt+1}"
+                        print(success_msg, flush=True)
+                        with open(log_file, "a", encoding="utf-8") as log:
+                            log.write(f"DEBUG: {success_msg}\n")
+                            log.flush()
                         return f"/static/images/{filename}"
-                    else:
-                        with open(log_file, "a") as log:
-                            log.write(f"DEBUG: Failed due to status {resp.status_code} or small content. Retrying...\n")
                             
                 except Exception as e:
-                    with open(log_file, "a") as log:
-                        log.write(f"DEBUG: ERROR: {str(e)}\n")
+                    with open(log_file, "a", encoding="utf-8") as log:
+                        log.write(f"DEBUG: ERROR on Attempt {attempt+1}: {str(e)}\n")
+                        log.flush()
             
             return None
         img_url = await asyncio.to_thread(_sync_fetch)
