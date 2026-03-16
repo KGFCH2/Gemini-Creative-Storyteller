@@ -469,8 +469,11 @@ function App() {
                                 </p>
                             </div>
 
-                            <div className="text-center md:text-left">
-                                <h4 className="text-[10px] font-black text-blue-500 uppercase tracking-[0.2em] mb-4">Platform</h4>
+                            <div className="text-center md:text-left group/platform">
+                                <div className="flex items-center justify-center md:justify-start gap-2 mb-4">
+                                    <BookOpen size={14} className="text-blue-500 group-hover/platform:scale-125 group-hover/platform:rotate-12 transition-all duration-300" />
+                                    <h4 className="text-[10px] font-black text-blue-500 uppercase tracking-[0.2em]">Platform</h4>
+                                </div>
                                 <ul className="space-y-2">
                                     {['About', 'FAQs', 'Documentation'].map(item => (
                                         <li key={item}>
@@ -489,8 +492,11 @@ function App() {
                                 </ul>
                             </div>
 
-                            <div className="text-center md:text-left">
-                                <h4 className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em] mb-4">Legal</h4>
+                            <div className="text-center md:text-left group/legal">
+                                <div className="flex items-center justify-center md:justify-start gap-2 mb-4">
+                                    <ShieldCheck size={14} className="text-indigo-400 group-hover/legal:scale-125 group-hover/legal:-rotate-12 transition-all duration-300" />
+                                    <h4 className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em]">Legal</h4>
+                                </div>
                                 <ul className="space-y-2">
                                     {['Terms', 'Privacy'].map(item => (
                                         <li key={item}>
@@ -505,8 +511,11 @@ function App() {
                                 </ul>
                             </div>
 
-                            <div className="text-center md:text-left">
-                                <h4 className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em] mb-4">Connect</h4>
+                            <div className="text-center md:text-left group/connect">
+                                <div className="flex items-center justify-center md:justify-start gap-2 mb-4">
+                                    <Sparkles size={14} className="text-emerald-400 group-hover/connect:scale-125 group-hover/connect:animate-pulse transition-all duration-300" />
+                                    <h4 className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em]">Connect</h4>
+                                </div>
                                 <a 
                                     href="https://github.com/KGFCH2/Gemini-Creative-Storyteller" 
                                     target="_blank" 
