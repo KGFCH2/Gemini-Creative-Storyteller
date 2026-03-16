@@ -554,13 +554,12 @@ function App() {
                             </div>
                         </div>
 
-                        <div className="mt-12 pt-8 border-t border-[#1e293b] flex flex-col md:flex-row items-center justify-between gap-4 px-6 opacity-50">
-                            <p className="text-[9px] font-bold text-slate-500 uppercase tracking-[0.1em]">
-                                © 2026 Gemini Creative Storyteller. All rights synthesized.
+                        <div className="mt-12 pt-8 border-t border-[#1e293b] flex flex-col md:flex-row items-center justify-between gap-4 px-6">
+                            <p className="text-[9px] font-bold text-white uppercase tracking-[0.1em]">
+                                © 2026 Gemini Creative Storyteller.
                             </p>
                             <div className="flex items-center gap-6">
-                                <span className="text-[9px] font-bold text-slate-600 uppercase tracking-tighter">API V2.4.0</span>
-                                <span className="text-[9px] font-bold text-slate-600 uppercase tracking-tighter">Stable Flux-S</span>
+                                <span className="text-[9px] font-bold text-white uppercase tracking-tighter">All rights synthesized.</span>
                             </div>
                         </div>
                     </footer>
