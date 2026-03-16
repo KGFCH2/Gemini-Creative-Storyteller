@@ -9,8 +9,17 @@ from creative_director_agent import CreativeDirectorAgent
 from story_agent import generate_story_and_scenes
 from audio_agent import generate_audio_async
 
+from dotenv import load_dotenv
+load_dotenv()
+
 app = FastAPI(title="Gemini Creative Storyteller Agent")
-director = CreativeDirectorAgent()
+
+try:
+    director = CreativeDirectorAgent()
+except Exception as e:
+    print(f"❌ CRITICAL ERROR: Failed to initialize CreativeDirectorAgent: {e}")
+    # Still allow the app to start but it will fail on /generate
+    director = None
 
 # Enable CORS for frontend requests
 app.add_middleware(
@@ -84,9 +93,15 @@ async def generate_content(request: StoryRequest):
         )
 
     except Exception as e:
-        print(f"🎬 Server Error: {str(e)}")
+        print(f"🎬 Server Error: {str(e)}", flush=True)
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/")
 def read_root():
     return {"message": "Welcome to Gemini Creative Storyteller API"}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=8000)
