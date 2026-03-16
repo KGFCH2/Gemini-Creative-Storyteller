@@ -1,6 +1,6 @@
 # 🏗️ System Architecture: Gemini Creative Storyteller
 
-This document provides a clear visual and technical representation of how the **Gemini Creative Storyteller** platform operates, from the user's prompt to the final cinematic storyboard.
+This document provides a clear visual and technical representation of how the **Gemini Creative Storyteller** platform operates, from the user's prompt to the final cinematic storyboard. For setup and usage, see [INSTRUCTIONS.md](INSTRUCTIONS.md) or [README.md](README.md).
 
 ---
 

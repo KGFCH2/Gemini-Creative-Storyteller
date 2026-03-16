@@ -2,7 +2,7 @@
 
 ## 🌟 Overview
 
-**AI Creative StoryTeller** is a cinematic multimodal agent built for the **evpost platform hackathon**. It fulfills the "Creative Director" problem statement by leveraging **Gemini's native interleaved output** to seamlessly weave together text, generated imagery, and audio narration in a single, fluid flow.
+**AI Creative StoryTeller** is a cinematic multimodal agent built for the **evpost platform hackathon**. It fulfills the "Creative Director" problem statement by leveraging **Gemini's native interleaved output** to seamlessly weave together text, generated imagery, and audio narration in a single, fluid flow. For a technical deep dive, see the [Architecture Guide](ARCHITECTURE.md).
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 

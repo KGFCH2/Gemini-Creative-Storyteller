@@ -36,6 +36,7 @@ The heart of this project is the `CreativeDirectorAgent`. It doesn't just genera
 - `/frontend`: React (Vite) + TailwindCSS cinematic dashboard.
 - `/backend`: FastAPI Python orchestrator.
 - `INSTRUCTIONS.md`: Step-by-step setup and deployment guide. See [INSTRUCTIONS.md](INSTRUCTIONS.md) for full details.
+- `ARCHITECTURE.md`: Detailed system design and media synthesis flow. See [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## 🚀 Deployment
 
