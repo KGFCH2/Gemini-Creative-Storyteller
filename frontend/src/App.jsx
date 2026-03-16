@@ -133,13 +133,14 @@ function App() {
         setStoryData({ story: '', imageUrls: [], audioUrl: '', originalText: '', nodes: [] })
 
         try {
-            const response = await axios.post('http://localhost:8000/generate', {
+            const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+            const response = await axios.post(`${API_BASE_URL}/generate`, {
                 prompt: prompt,
                 voice: voice
             })
 
             const data = response.data;
-            const BASE_URL = 'http://localhost:8000';
+            const BASE_URL = API_BASE_URL;
 
             let finalStory = data.story || "";
             let finalImages = data.image_urls || [];
@@ -189,14 +190,15 @@ function App() {
 
     const handleVoiceChange = async (newVoice) => {
         setVoice(newVoice);
+        const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
         if (storyData.originalText && !loading) {
             try {
-                const response = await axios.post('http://localhost:8000/generate-audio-only', {
+                const response = await axios.post(`${API_BASE_URL}/generate-audio-only`, {
                     text: storyData.originalText,
                     voice: newVoice
                 });
                 const audioUrl = response.data.audio_url?.startsWith('/static')
-                    ? `http://localhost:8000${response.data.audio_url}`
+                    ? `${API_BASE_URL}${response.data.audio_url}`
                     : response.data.audio_url;
                 setStoryData(prev => ({ ...prev, audioUrl }));
             } catch (err) {
