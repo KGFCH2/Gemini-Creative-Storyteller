@@ -35,7 +35,17 @@ The heart of this project is the `CreativeDirectorAgent`. It doesn't just genera
 
 - `/frontend`: React (Vite) + TailwindCSS cinematic dashboard.
 - `/backend`: FastAPI Python orchestrator.
-- `INSTRUCTIONS.md`: Step-by-step setup guide for judges and users. See [INSTRUCTIONS.md](INSTRUCTIONS.md) for full setup instructions and running the project.
+- `INSTRUCTIONS.md`: Step-by-step setup and deployment guide. See [INSTRUCTIONS.md](INSTRUCTIONS.md) for full details.
+
+## 🚀 Deployment
+
+The project is designed to be easily deployed to modern cloud platforms:
+
+*   **Backend**: Deployed on **Render** (FastAPI)
+*   **Frontend**: Deployed on **Vercel** (React/Vite)
+*   **Live Backend API**: `https://story-engine-api-rdsv.onrender.com`
+
+Detailed step-by-step deployment instructions can be found in [INSTRUCTIONS.md](INSTRUCTIONS.md#🚀-deployment-guide).
 
 ## 📜 License
 
