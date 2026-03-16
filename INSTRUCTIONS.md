@@ -135,8 +135,8 @@ Follow these steps to deploy the project for free.
 2. **Root Directory**: Set this to `frontend`.
 3. **Framework Preset**: Select `Vite`.
 4. **Environment Variables**: Add this critical variable:
-    * **Name**: `VITE_API_URL`
-    * **Value**: `https://story-engine-api-rdsv.onrender.com`
+    - **Name**: `VITE_API_URL`
+    - **Value**: `https://story-engine-api-rdsv.onrender.com`
 5. **Deploy**: Click Deploy. Vercel will build and host your frontend.
 
 ---
