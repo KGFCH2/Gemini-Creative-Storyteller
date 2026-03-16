@@ -116,12 +116,26 @@ const InfoModal = ({ type, onClose }) => {
         about: {
             title: "About the Project",
             icon: <Info className="text-emerald-400" />,
-            text: "Gemini Creative Storyteller was born from the vision of merging AI-driven literature with cinematic production. Originally built for the evpost Hackathon, it solves the 'Creative Director' challenge by acting as an orchestrator that understands context, visualizes scenes, and narrates them in real-time. Our mission is to democratize high-quality storytelling for creators, educators, and dreamers everywhere."
+            text: "Gemini Creative Storyteller is an AI-powered web application that acts as your personal movie director. Users provide a simple text prompt, and the app generates a fully fleshed-out, multi-scene story in real time. The system utilizes a 'Creative Director' agent to intelligently interleave the narrative with AI-generated images and audio narration.",
+            sections: [
+                { q: "Inspiration", a: "Storytelling is one of the oldest forms of human expression. We wanted to take storytelling to the next level by combining the power of generative AI with a deeply immersive, cinematic user experience. Our goal was to build a platform where anyone can bring their imagination to life as a seamless, mixed-media storyboard." },
+                { q: "How we built it", a: "Backend: Built with Python and FastAPI. We implemented a multi-agent system (story, image, audio agents) orchestrated by a Creative Director. Powered by Google Gemini. \nFrontend: React (Vite) and TailwindCSS with a heavy focus on futuristic glassmorphism and cinematic motion." },
+                { q: "Challenges we ran into", a: "1. Agent Orchestration: Coordinating story, image, and audio synthesis cohesively was complex.\n2. API Resilience: Designing a failover system for 14+ API keys to handle rate limits and timeouts.\n3. UI Sync: Orchestrating the streaming display and audio playback in React's state." },
+                { q: "Accomplishments", a: "• Successfully built the specialized Creative Director agent.\n• Robust, invisible API key failover system.\n• Breathtaking futuristic UI that feels like a professional cinematic dashboard." },
+                { q: "What we learned", a: "We gained deep experience in multi-agent LLM orchestration, asynchronous media generation in FastAPI, and advanced TailwindCSS techniques for atmospheric interfaces." },
+                { q: "What's Next?", a: "• AI Video: Moving from static images to animated scenes.\n• Voice Clones: Personalized character narration.\n• Branching Stories: User-driven plot choices.\n• Exporting: Shareable video files and PDF storybooks." }
+            ]
         },
         docs: {
             title: "Technical Documentation",
             icon: <Book className="text-orange-400" />,
-            text: "Architecture Overview: 1. Backend: Built with Python FastAPI, featuring a custom 'CreativeDirectorAgent' that handles multi-key failover and parallel asset generation. 2. Frontend: A React/Vite SPA utilizing TailwindCSS for cinematic glassmorphism UI. 3. Integration: Seamless WebSocket-like streaming simulation for progressive content delivery. 4. Failover: Implements 'Smart-Key' rotation logic to ensure zero-downtime during peak API usage."
+            text: "Gemini Creative Storyteller utilizes a distributed agent architecture to synthesize multimodal content on-the-fly.",
+            sections: [
+                { q: "Agent Architecture", a: "The 'CreativeDirectorAgent' parses the primary LLM stream to identify scene boundaries, triggers image production tasks in parallel, and merges them with neural TTS audio. This ensures the UI stays updated without waiting for the entire story to finish." },
+                { q: "The Failover Logic", a: "The system is configured with a cascading failover mechanism. If the primary Gemini key fails or hits a quota (429/500/503), the agent automatically rotates to the next key in the pool, retrying the specific task until success." },
+                { q: "Frontend Stack", a: "Powered by Vite and React 18, utilizing Axios for high-performance API communication. Styling is handled via TailwindCSS v4 with custom glass-blur utilities and Framer-like CSS animations for the splash loader." },
+                { q: "Static Assets", a: "A custom directory management system in the backend handles the cleanup and serving of unique audio/image files, ensuring each session remains isolated and efficient." }
+            ]
         }
     };
 
@@ -143,7 +157,7 @@ const InfoModal = ({ type, onClose }) => {
                         <X size={20} />
                     </button>
                 </div>
-                <div className="p-8 space-y-4">
+                <div className="p-8 space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar">
                     {active.text && (
                         <div className="p-4 rounded-xl bg-[#0f172a]/30 border border-transparent hover:border-blue-500/30 hover:bg-[#0f172a]/50 transition-all duration-300 group">
                             <p className="text-slate-300 text-sm leading-relaxed group-hover:text-white transition-colors">
@@ -154,7 +168,7 @@ const InfoModal = ({ type, onClose }) => {
                     {active.sections && active.sections.map((s, i) => (
                         <div key={i} className="bg-[#0f172a] p-4 rounded-xl border border-[#334155] hover:border-blue-500/50 hover:bg-[#162033] transition-all duration-300 cursor-default group">
                             <p className="text-xs font-black text-blue-400 uppercase mb-1 group-hover:text-blue-300 transition-colors">{s.q}</p>
-                            <p className="text-xs text-slate-400 font-medium group-hover:text-slate-300 transition-colors">{s.a}</p>
+                            <p className="text-xs text-slate-400 font-medium group-hover:text-slate-300 transition-colors whitespace-pre-line">{s.a}</p>
                         </div>
                     ))}
                 </div>
