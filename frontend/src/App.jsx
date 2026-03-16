@@ -475,7 +475,11 @@ function App() {
                                     {['About', 'FAQs', 'Documentation'].map(item => (
                                         <li key={item}>
                                             <button 
-                                                onClick={() => setActiveInfo(item.toLowerCase() === 'faqs' ? 'faq' : item.toLowerCase().slice(0, 4))}
+                                                onClick={() => {
+                                                    if (item === 'About') setActiveInfo('about');
+                                                    else if (item === 'FAQs') setActiveInfo('faq');
+                                                    else if (item === 'Documentation') setActiveInfo('docs');
+                                                }}
                                                 className="text-xs text-slate-400 hover:text-white font-bold transition-colors"
                                             >
                                                 {item}
