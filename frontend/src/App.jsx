@@ -7,13 +7,8 @@ import InterleavedStoryBoard from './components/InterleavedStoryBoard'
 const SplashLoader = ({ onFinish }) => {
     const [started, setStarted] = useState(false);
 
-    useEffect(() => {
-        if (started) {
-            // Give the video some time to play
-            const timer = setTimeout(() => onFinish(), 5000);
-            return () => clearTimeout(timer);
-        }
-    }, [started, onFinish]);
+    // We no longer use a fixed 5s timer. 
+    // We will let the video play to its natural end.
 
     return (
         <div className="fixed inset-0 z-100 bg-[#020617] flex items-center justify-center overflow-hidden animate-out fade-out duration-1000 fill-mode-forwards">
@@ -38,15 +33,15 @@ const SplashLoader = ({ onFinish }) => {
                     <div className="relative w-full h-full overflow-hidden bg-black">
                         {/* 
                             We use scale-[1.15] alongside object-cover to intentionally bleed the edges of the video 
-                            out of the viewport boundaries. This organically crops out the "Veo" watermark 
-                            that sits tightly tucked into the bottom-right corner without needing a video editor re-render.
+                            out of the viewport boundaries. This organically crops out the "Veo" watermark.
+                            We removed loop and added onEnded to transition automatically.
                         */}
                         <video 
                             src={started ? "/Loader.mp4" : ""}
                             autoPlay
-                            loop
                             muted
                             playsInline
+                            onEnded={onFinish}
                             className="absolute inset-0 w-full h-full object-cover scale-[1.15] transform origin-center"
                         />
                         
