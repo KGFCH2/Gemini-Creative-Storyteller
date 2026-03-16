@@ -117,27 +117,27 @@ Follow these steps to deploy the project for free.
 
 ### 1. 🐍 Backend Deployment (Render.com)
 
-1.  **Repository**: Push your code to a GitHub repository.
-2.  **Create Service**: On Render, click **New +** > **Web Service**.
-3.  **Root Directory**: Set this to `backend`.
-4.  **Runtime**: Select `Python 3`.
-5.  **Build Command**: `pip install -r requirements.txt`
-6.  **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-7.  **Environment Variables**: Add the following from your `.env`:
-    *   `GEMINI_API_KEY_1`...`GEMINI_API_KEY_14`
-    *   `INFIP_API_KEY`
-    *   `PYTHON_VERSION`: `3.11.0`
-8.  **URL**: Once deployed, you will get a URL like `https://story-engine-api-rdsv.onrender.com`.
+1. **Repository**: Push your code to a GitHub repository.
+2. **Create Service**: On Render, click **New +** > **Web Service**.
+3. **Root Directory**: Set this to `backend`.
+4. **Runtime**: Select `Python 3`.
+5. **Build Command**: `pip install -r requirements.txt`
+6. **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+7. **Environment Variables**: Add the following from your `.env`:
+    - `GEMINI_API_KEY_1`...`GEMINI_API_KEY_14`
+    - `INFIP_API_KEY`
+    - `PYTHON_VERSION`: `3.11.0`
+8. **URL**: Once deployed, you will get a URL like `https://story-engine-api-rdsv.onrender.com`.
 
 ### 2. ⚛️ Frontend Deployment (Vercel)
 
-1.  **Add New Project**: On Vercel, click **Add New** > **Project**.
-2.  **Root Directory**: Set this to `frontend`.
-3.  **Framework Preset**: Select `Vite`.
-4.  **Environment Variables**: Add this critical variable:
-    *   **Name**: `VITE_API_URL`
-    *   **Value**: `https://story-engine-api-rdsv.onrender.com`
-5.  **Deploy**: Click Deploy. Vercel will build and host your frontend.
+1. **Add New Project**: On Vercel, click **Add New** > **Project**.
+2. **Root Directory**: Set this to `frontend`.
+3. **Framework Preset**: Select `Vite`.
+4. **Environment Variables**: Add this critical variable:
+    * **Name**: `VITE_API_URL`
+    * **Value**: `https://story-engine-api-rdsv.onrender.com`
+5. **Deploy**: Click Deploy. Vercel will build and host your frontend.
 
 ---
 

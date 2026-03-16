@@ -42,9 +42,9 @@ The heart of this project is the `CreativeDirectorAgent`. It doesn't just genera
 
 The project is designed to be easily deployed to modern cloud platforms:
 
-*   **Backend**: Deployed on **Render** (FastAPI)
-*   **Frontend**: Deployed on **Vercel** (React/Vite)
-*   **Live Backend API**: `https://story-engine-api-rdsv.onrender.com`
+- **Backend**: Deployed on **Render** (FastAPI)
+- **Frontend**: Deployed on **Vercel** (React/Vite)
+- **Live Backend API**: `https://story-engine-api-rdsv.onrender.com`
 
 Detailed step-by-step deployment instructions can be found in [INSTRUCTIONS.md](INSTRUCTIONS.md#🚀-deployment-guide).
 
